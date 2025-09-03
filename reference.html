@@ -1,0 +1,58 @@
+<div class="hidden md:block fixed top-2 left-1/2 -translate-x-1/2 z-[70]">
+
+    <!-- Workspace Switcher -->
+    <!--[if BLOCK]><![endif]-->
+    <!--[if ENDBLOCK]><![endif]-->
+
+    <nav class="flex items-center rounded-full p-0.5 shadow-sm bg-slate-100 ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10" x-data="{ open: false }" @click.outside="open = false">
+        <!--[if BLOCK]><![endif]-->
+        <!--[if BLOCK]><![endif]--><a wire:navigate="" href="https://agent-l.gotest.dev/admin" aria-pressed="true" title="Admin" class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900">
+                    Admin
+                </a>
+        <!--[if ENDBLOCK]><![endif]-->
+
+        <!--[if BLOCK]><![endif]--><a wire:navigate="" href="https://agent-l.gotest.dev/admin/files" aria-pressed="false" title="Knowledge" class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10">
+                    Knowledge
+                </a>
+        <!--[if ENDBLOCK]><![endif]-->
+
+        <!--[if BLOCK]><![endif]-->
+        <div class="relative">
+            <button type="button" @click="open = !open" aria-haspopup="listbox" :aria-expanded="open" title="Agent Config" class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10"
+                aria-expanded="false">
+                        Agent Config
+                        <svg class="ml-1 inline h-4 w-4 opacity-80" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
+                    </button>
+
+            <div x-show="open" x-transition.origin.top.center="" class="absolute left-1/2 -translate-x-1/2 mt-2 z-[80] w:[15rem] w-[15rem]" style="display: none;">
+                <div class="w-full rounded-xl overflow-hidden shadow-lg ring-1 ring-slate-200 dark:ring-white/10 bg-white dark:bg-zinc-800">
+                    <ul role="listbox" class="divide-y divide-slate-100 dark:divide-white/5">
+                        <!--[if BLOCK]><![endif]-->
+                        <li>
+                            <a wire:navigate="" @click="open = false" href="https://agent-l.gotest.dev/admin/agents/2/edit" class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-zinc-100 dark:hover:bg-white/10">
+                                <span class="truncate">My Agent 2025-08-29 16:24</span>
+                                <svg class="h-4 w-4 opacity-30" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01-.02-1.06L10.94 10 7.2 6.29a.75.75 0 111.06-1.06l4.24 4.24a.75.75 0 010 1.06l-4.24 4.24a.75.75 0 01-1.06 0z" clip-rule="evenodd"></path></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a wire:navigate="" @click="open = false" href="https://agent-l.gotest.dev/admin/agents/1/edit" class="flex items-center justify-between px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-zinc-100 dark:hover:bg-white/10">
+                                <span class="truncate">My Agent 2025-08-29 16:20</span>
+                                <svg class="h-4 w-4 opacity-30" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01-.02-1.06L10.94 10 7.2 6.29a.75.75 0 111.06-1.06l4.24 4.24a.75.75 0 010 1.06l-4.24 4.24a.75.75 0 01-1.06 0z" clip-rule="evenodd"></path></svg>
+                            </a>
+                        </li>
+                        <!--[if ENDBLOCK]><![endif]-->
+                        <li>
+                            <a wire:navigate="" @click="open = false" href="https://agent-l.gotest.dev/admin/files" class="flex items-center px-3 py-2 text-sm text-slate-400 hover:text-slate-700 dark:text-white/50 dark:hover:text-white/80">
+                                <svg class="mr-2 h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+</svg> New AI Agent
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </nav>
+</div>
