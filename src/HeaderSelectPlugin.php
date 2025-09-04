@@ -4,17 +4,12 @@ namespace SolutionForest\FilamentHeaderSelect;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\View\PanelsRenderHook;
 
 class HeaderSelectPlugin implements Plugin
 {
-    use EvaluatesClosures;
-
     protected array $selects = [];
-    protected string $position = 'before_user_menu';
     protected static array $callbacks = [];
-    protected int $priority = 0;
 
     public function getId(): string
     {
@@ -23,26 +18,24 @@ class HeaderSelectPlugin implements Plugin
 
     public static function make(): static
     {
-        return app(static::class);
+        // Do not reuse a single container instance across Panels to avoid leaking state
+        return new static();
     }
 
     public function register(Panel $panel): void
     {
-        // Register callbacks for all selects
         foreach ($this->selects as $select) {
-            $onChange = $select->getOnChange();
-            if ($onChange) {
-                $this->registerCallback($select->getName(), $onChange);
+            if ($callback = $select->getOnChange()) {
+                $this->registerCallback($select->getName(), $callback);
             }
         }
-        
-        // Use high priority to ensure proper loading order (negative numbers load first)
+
+        // Fixed top-center placement in the topbar end section for better positioning.
         $panel->renderHook(
-            $this->getRenderHookName(),
+            PanelsRenderHook::TOPBAR_END,
             fn (): string => view('filament-header-select::selects', [
                 'selects' => $this->selects,
-            ])->render(),
-            scopes: null
+            ])->render()
         );
     }
 
@@ -58,47 +51,7 @@ class HeaderSelectPlugin implements Plugin
         return $this;
     }
 
-    public function position(string $position): static
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    public function priority(int $priority): static
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    protected function getRenderHookName(): string
-    {
-        return match ($this->position) {
-            'before_user_menu' => PanelsRenderHook::USER_MENU_BEFORE,
-            'after_user_menu' => PanelsRenderHook::USER_MENU_AFTER,
-            'global_search_before' => PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-            'global_search_after' => PanelsRenderHook::GLOBAL_SEARCH_AFTER,
-            'topbar_start' => PanelsRenderHook::TOPBAR_START,
-            'topbar_end' => PanelsRenderHook::TOPBAR_END,
-            'topbar_center' => PanelsRenderHook::GLOBAL_SEARCH_AFTER, // Use this for center positioning
-            'topbar_before' => PanelsRenderHook::TOPBAR_BEFORE,
-            'topbar_after' => PanelsRenderHook::TOPBAR_AFTER,
-            'topbar_logo_after' => PanelsRenderHook::TOPBAR_LOGO_AFTER,
-            'topbar_logo_before' => PanelsRenderHook::TOPBAR_LOGO_BEFORE,
-            'body_start' => PanelsRenderHook::BODY_START,
-            'body_end' => PanelsRenderHook::BODY_END,
-            default => PanelsRenderHook::USER_MENU_BEFORE,
-        };
-    }
-
-    public static function get(): static
-    {
-        /** @var static $plugin */
-        $plugin = filament(app(static::class)->getId());
-
-        return $plugin;
-    }
+    // Position & priority setters removed – placement is fixed and not user-configurable.
 
     public static function executeCallback(string $selectName, mixed $value): void
     {

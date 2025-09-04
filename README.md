@@ -45,7 +45,7 @@ public function panel(Panel $panel): Panel
     return $panel
         ->plugins([
             HeaderSelectPlugin::make()
-                ->position('body_start') // Creates floating top navigation
+                // Fixed floating top navigation (position no longer configurable)
                 ->selects([
                     // Page Navigation Link
                     HeaderSelect::make('admin')
@@ -121,7 +121,7 @@ Create a comprehensive navigation bar with mixed elements:
 
 ```php
 HeaderSelectPlugin::make()
-    ->position('body_start')
+    // Position is fixed; no configuration needed
     ->selects([
         // Primary navigation - always active
         HeaderSelect::make('admin')
@@ -236,7 +236,7 @@ HeaderSelect::make('locale')
 | Method | Description | Example |
 |--------|-------------|---------|
 | `make()` | Create plugin instance | `HeaderSelectPlugin::make()` |
-| `position(string $position)` | Set render position | `->position('body_start')` |
+| (position fixed) | Always renders after global search (top-center) | N/A |
 | `selects(array $selects)` | Set navigation elements | `->selects([...])` |
 
 ### Icon Sizing
@@ -273,11 +273,7 @@ HeaderSelect::make('docs')
 
 ### Available Positions
 
-- `body_start` - Fixed floating navigation at top (recommended)
-- `topbar_start` - Within Filament's topbar at start
-- `topbar_end` - Within Filament's topbar at end
-- `before_user_menu` - Before user menu
-- `after_user_menu` - After user menu
+The plugin now renders at a single optimized location: fixed floating bar after the global search (top-center). Removal of position options simplifies styling and avoids layout conflicts.
 
 ## Styling
 

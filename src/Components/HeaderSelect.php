@@ -212,14 +212,9 @@ class HeaderSelect implements Htmlable
         }
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
-        if (! $this->isVisible()) {
-            return '';
-        }
-
-        return view('filament-header-select::select', [
-            'select' => $this,
-        ])->render();
+        // Direct HTML rendering no longer used; kept to satisfy Htmlable interface.
+        return '';
     }
 }

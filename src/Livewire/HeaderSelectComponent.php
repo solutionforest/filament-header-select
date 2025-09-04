@@ -9,10 +9,12 @@ class HeaderSelectComponent extends Component
 {
     public array $selectData = [];
     public $value = null;
+    public bool $actionMode = false; // when true, acts as simple action button
 
-    public function mount(array $selectData = [])
+    public function mount(array $selectData = [], bool $actionMode = false)
     {
         $this->selectData = $selectData;
+        $this->actionMode = $actionMode;
         $name = $this->selectData['name'] ?? '';
         $defaultValue = $this->selectData['defaultValue'] ?? null;
         
@@ -35,6 +37,17 @@ class HeaderSelectComponent extends Component
                 select: $name,
                 value: $value
             );
+        }
+    }
+
+    public function triggerAction()
+    {
+        // Simple action: set session value to its name (toggle semantics can be implemented via callback)
+        $name = $this->selectData['name'] ?? '';
+        if ($name) {
+            session([$name => $name]);
+            HeaderSelectPlugin::executeCallback($name, $name);
+            $this->dispatch('header-select-changed', select: $name, value: $name);
         }
     }
 

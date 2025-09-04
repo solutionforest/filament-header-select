@@ -29,7 +29,7 @@ class HeaderSelectServiceProvider extends ServiceProvider
             ], 'filament-header-select-assets');
         }
 
-        // Register CSS styles with Filament
+    // Register CSS styles with Filament
         if (class_exists(\Filament\Support\Facades\FilamentAsset::class)) {
             \Filament\Support\Facades\FilamentAsset::register([
                 \Filament\Support\Assets\Css::make('filament-header-select', __DIR__.'/../resources/css/header-select.css'),
