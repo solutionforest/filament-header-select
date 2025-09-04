@@ -12,6 +12,8 @@ A modern header navigation component for Filament Admin with **global rounded st
 ✅ **No Selection Highlighting** - Clean UI without persistent highlighting  
 ✅ **Responsive Design** - Desktop-optimized, mobile-hidden  
 
+<img width="3840" height="2160" alt="HeaderSelect" src="https://github.com/user-attachments/assets/ad780100-3cf4-4701-823d-2f6bc5f411c0" />
+
 ## Installation
 
 ```bash
