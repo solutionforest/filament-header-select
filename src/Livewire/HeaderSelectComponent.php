@@ -10,6 +10,8 @@ class HeaderSelectComponent extends Component
     public array $selectData = [];
     public $value = null;
     public bool $actionMode = false; // when true, acts as simple action button
+    /** @var array<string,string> Map of option value => URL */
+    public array $optionUrls = [];
 
     public function mount(array $selectData = [], bool $actionMode = false)
     {
@@ -17,10 +19,29 @@ class HeaderSelectComponent extends Component
         $this->actionMode = $actionMode;
         $name = $this->selectData['name'] ?? '';
         $defaultValue = $this->selectData['defaultValue'] ?? null;
+        $this->optionUrls = $this->selectData['optionUrls'] ?? [];
         
         if ($name) {
             $this->value = session($name) ?? $defaultValue;
         }
+        
+    }
+
+    public function selectOption($newValue)
+    {
+        $this->value = $newValue;
+        $this->updatedValue($newValue);
+
+        // Optional navigation if a URL is mapped to this option
+        if (isset($this->optionUrls[$newValue]) && $this->optionUrls[$newValue]) {
+            return redirect()->to($this->optionUrls[$newValue]);
+        }
+    }
+
+    public function setValue($newValue)
+    {
+        $this->value = $newValue;
+        $this->updatedValue($newValue);
     }
 
     public function updatedValue($value)

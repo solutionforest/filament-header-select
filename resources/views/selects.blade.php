@@ -254,6 +254,16 @@
     background-color: var(--fhs-selected-hover-bg);
 }
 
+/* Prevent hover flicker & indicate non-clickable selected */
+.filament-header-select-option-selected.cursor-default {
+    pointer-events: none;
+}
+
+/* Active trigger button subtle ring */
+.filament-header-select-button-active {
+    box-shadow: 0 0 0 1px rgba(59,130,246,.4), 0 0 0 3px rgba(59,130,246,.15);
+}
+
 .dark .filament-header-select-option-selected {
     background-color: var(--fhs-selected-bg);
     color: var(--fhs-selected-text);
@@ -276,6 +286,72 @@
     flex-shrink: 0;
     margin-left: 0.5rem;
     opacity: 0.8;
+}
+
+/* Indicate navigable option */
+.filament-header-select-option.has-url:not(.filament-header-select-option-selected) {
+    position: relative;
+}
+.filament-header-select-option.has-url:not(.filament-header-select-option-selected)::after {
+    content: '\2192'; /* arrow */
+    font-size: 0.75rem;
+    opacity: .45;
+    margin-left: .5rem;
+}
+.filament-header-select-option.has-url:hover::after {
+    opacity: .8;
+}
+
+/* ------------------------------------------------------------------ */
+/* Visual refinement: lighter active + selected states (override)      */
+/* ------------------------------------------------------------------ */
+
+/* Active trigger button (value selected or open) */
+.filament-header-select-button-active {
+    background-color: rgba(59,130,246,0.12) !important;
+    color: var(--fhs-button-text) !important;
+    border: 1px solid rgba(59,130,246,0.35) !important;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.04);
+}
+
+.filament-header-select-button-active:hover,
+.filament-header-select-button-active:focus {
+    background-color: rgba(59,130,246,0.18) !important;
+}
+
+/* Selected option in dropdown */
+.filament-header-select-option-selected {
+    background-color: rgba(59,130,246,0.15) !important;
+    color: var(--fhs-button-text) !important;
+    font-weight: 500;
+}
+
+.filament-header-select-option-selected:hover,
+.filament-header-select-option-selected:focus {
+    background-color: rgba(59,130,246,0.22) !important;
+}
+
+/* Check icon color & subtle emphasis */
+.filament-header-select-option-selected .filament-header-select-check-icon {
+    color: rgb(59 130 246);
+    opacity: 0.95;
+}
+
+/* Dark mode adjustments */
+.dark .filament-header-select-button-active {
+    background-color: rgba(59,130,246,0.22) !important;
+    color: var(--fhs-button-text) !important;
+    border-color: rgba(59,130,246,0.55) !important;
+}
+
+.dark .filament-header-select-option-selected {
+    background-color: rgba(59,130,246,0.25) !important;
+    color: var(--fhs-option-text) !important;
+}
+
+.dark .filament-header-select-option-selected:hover,
+.dark .filament-header-select-option-selected:focus {
+    background-color: rgba(59,130,246,0.35) !important;
 }
 </style>
 @endonce
@@ -326,7 +402,7 @@
                 
                 @if ($hasOptions)
                     {{-- Livewire Dropdown Component (stateful, no extra route/middleware) --}}
-                    @livewire(\SolutionForest\FilamentHeaderSelect\Livewire\HeaderSelectComponent::class, [
+                    @livewire('header-select-component', [
                         'selectData' => [
                             'name' => $name,
                             'label' => $label,
@@ -335,7 +411,7 @@
                             'defaultValue' => $value,
                             'icon' => $icon,
                         ],
-                    ])
+                    ], key('header-select-'.$name))
                 @elseif ($hasUrl)
                     {{-- URL Link Button --}}
                     <a 
@@ -352,7 +428,7 @@
                     </a>
                 @else
                     {{-- Simple Action via Livewire --}}
-                    @livewire(\SolutionForest\FilamentHeaderSelect\Livewire\HeaderSelectComponent::class, [
+                    @livewire('header-select-component', [
                         'selectData' => [
                             'name' => $name,
                             'label' => $label,
@@ -361,7 +437,7 @@
                             'icon' => $icon,
                         ],
                         'actionMode' => true,
-                    ])
+                    ], key('header-select-action-'.$name))
                 @endif
             @endif
         @endforeach
