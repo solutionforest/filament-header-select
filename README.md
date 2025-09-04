@@ -1,30 +1,16 @@
-# Filament Header Select Package
+# Filament Header Select
 
-A powerful Laravel package that adds customizable navigation elements to the Filament admin panel header. Perfect for multi-tenant applications, context switching, or creating navigation bars similar to modern admin interfaces.
+A modern header navigation component for Filament Admin with **global rounded styling** and **proper color system**.
 
-🎯 **Features multi-type navigation** - Supports dropdowns, page links, and external URLs in a single floating navigation bar!
+## ✨ Features
 
-## Features
-
-- 🎯 **Easy Integration** - Simple installation and configuration
-- 🚀 **Multiple Navigation Types** - Dropdowns, page links, and external URLs
-- 🎨 **Fully Customizable** - Customize appearance, behavior, positioning, and colors
-- 🔄 **Dynamic Options** - Load options from database, API, or static arrays
-- 🌗 **Dark Mode Support** - Seamlessly works with Filament's dark mode
-- 📱 **Responsive Design** - Mobile-friendly floating navigation bar
-- 🔌 **Event Driven** - Emit and listen to selection change events
-- 🏗️ **Multiple Instances** - Add multiple navigation elements in the header
-- 🔐 **Permission Support** - Built-in authorization support via `visible()` method
-- 🧪 **Pure CSS** - No external dependencies, self-contained styling
-- 🎯 **Modern UI** - Matches reference designs with pill-shaped navigation
-- 🎨 **Color Themes** - Support for primary, success, warning, and danger color variants
-- 📏 **Icon Sizing** - Filament-native icon sizing system with spacing control
-
-## Requirements
-
-- PHP 8.1+
-- Laravel 10.0+
-- Filament 3.0+ or 4.0+
+✅ **Global Rounded Styling** - Apply consistent rounded corners to all navigation elements  
+✅ **Filament Color System** - Uses native Filament colors (primary, gray, info, success, warning, danger)  
+✅ **URL Navigation** - Direct links to pages  
+✅ **Dropdown Selects** - Interactive dropdowns with onChange callbacks  
+✅ **Dynamic Options** - Refresh dropdown options from database  
+✅ **No Selection Highlighting** - Clean UI without persistent highlighting  
+✅ **Responsive Design** - Desktop-optimized, mobile-hidden  
 
 ## Installation
 
@@ -32,9 +18,7 @@ A powerful Laravel package that adds customizable navigation elements to the Fil
 composer require solution-forest/filament-header-select
 ```
 
-## Usage
-
-Add to your Panel Provider:
+## Quick Start
 
 ```php
 use SolutionForest\FilamentHeaderSelect\HeaderSelectPlugin;
@@ -45,347 +29,123 @@ public function panel(Panel $panel): Panel
     return $panel
         ->plugins([
             HeaderSelectPlugin::make()
-                // Fixed floating top navigation (position no longer configurable)
+                ->rounded('rounded-lg') // Global rounded corners
                 ->selects([
-                    // Page Navigation Link
+                    // URL Link
                     HeaderSelect::make('admin')
                         ->label('Admin')
-                        ->url(fn () => route('filament.admin.pages.dashboard'))
-                        ->icon('heroicon-o-home'),
+                        ->url(fn() => route('filament.admin.pages.dashboard'))
+                        ->color('primary'),
                         
-                    // Dropdown Select
-                    HeaderSelect::make('tenant')
-                        ->label('Tenant')
-                        ->options(fn () => Tenant::pluck('name', 'id'))
-                        ->default(fn () => session('tenant_id'))
-                        ->placeholder('Select Tenant')
+                    // Dropdown with Navigation
+                    HeaderSelect::make('agent_config')
+                        ->label('Agent Config')
+                        ->options([
+                            'my_agent_1' => 'My Agent 2025-08-29 16:24',
+                            'my_agent_2' => 'My Agent 2025-08-29 16:20',
+                            'new_agent' => '+ New AI Agent',
+                        ])
+                        ->icon('heroicon-o-cog-6-tooth')
+                        ->color('info')
+                        ->keepOriginalLabel(true)
+                        ->refreshable(true)
                         ->onChange(function ($value) {
-                            session(['tenant_id' => $value]);
+                            return match($value) {
+                                'my_agent_1' => '/admin/agents/my-agent-1',
+                                'my_agent_2' => '/admin/agents/my-agent-2',
+                                'new_agent' => '/admin/agents/create',
+                                default => null,
+                            };
                         }),
-                        
-                    // External Link
-                    HeaderSelect::make('docs')
-                        ->label('Documentation')
-                        ->url('https://filamentphp.com/docs')
-                        ->newTab(true)
-                        ->icon('heroicon-o-document-text'),
-                ]),
+                ])
         ]);
 }
 ```
 
-## Navigation Types
+## Configuration
 
-### 1. Page Links
-Direct navigation to internal pages with automatic active state detection:
+### Global Rounded Corners
+```php
+HeaderSelectPlugin::make()
+    ->rounded('rounded-lg')      // Large rounded corners
+    ->rounded('rounded-full')    // Pill-like styling
+```
 
+### Colors
+```php
+HeaderSelect::make('item')
+    ->color('primary')    // Indigo blue
+    ->color('gray')       // Neutral gray
+    ->color('info')       // Blue
+    ->color('success')    // Green
+    ->color('warning')    // Amber
+    ->color('danger')     // Red
+```
+
+## Methods
+
+| Method | Description | Example |
+|--------|-------------|---------|
+| `label(string $label)` | Set display label | `->label('Admin')` |
+| `url(string\|Closure $url)` | Set navigation URL | `->url('/admin')` |
+| `options(array\|Closure $options)` | Set dropdown options | `->options(['key' => 'Label'])` |
+| `color(string $color)` | Set color theme | `->color('primary')` |
+| `icon(string $icon)` | Set Heroicon | `->icon('heroicon-o-home')` |
+| `keepOriginalLabel(bool $keep)` | Keep original label | `->keepOriginalLabel(true)` |
+| `refreshable(bool $refreshable)` | Add refresh button | `->refreshable(true)` |
+| `onChange(Closure $callback)` | Handle selection changes | `->onChange(fn($value) => route('page', $value))` |
+## Examples
+
+### URL Navigation
 ```php
 HeaderSelect::make('dashboard')
     ->label('Dashboard')
-    ->url(fn () => route('filament.admin.pages.dashboard'))
+    ->url(fn() => route('filament.admin.pages.dashboard'))
     ->icon('heroicon-o-home')
+    ->color('primary')
 ```
 
-### 2. Dropdown Selects
-Traditional dropdowns with options and change callbacks:
-
+### Dropdown with Redirect
 ```php
-HeaderSelect::make('tenant')
-    ->label('Current Tenant')
-    ->options(fn () => auth()->user()->tenants()->pluck('name', 'id'))
-    ->default(fn () => session('current_tenant_id'))
-    ->placeholder('Select Tenant')
-    ->icon('heroicon-o-building-office')
-    ->onChange(function ($value) {
-        session(['current_tenant_id' => $value]);
-        // Switch context
-        app(TenantManager::class)->switch($value);
-    })
-```
-
-### 3. External Links
-Links to external sites with optional new tab opening:
-
-```php
-HeaderSelect::make('docs')
-    ->label('Documentation')
-    ->url('https://filamentphp.com/docs')
-    ->newTab(true) // Opens in new tab
-    ->icon('heroicon-o-document-text')
-```
-
-## Examples
-
-### Complete Navigation Bar
-Create a comprehensive navigation bar with mixed elements:
-
-```php
-HeaderSelectPlugin::make()
-    // Position is fixed; no configuration needed
-    ->selects([
-        // Primary navigation - always active
-        HeaderSelect::make('admin')
-            ->label('Admin')
-            ->url(fn () => route('filament.admin.pages.dashboard'))
-            ->icon('heroicon-o-home'),
-            
-        // Secondary page
-        HeaderSelect::make('knowledge')
-            ->label('Knowledge Base')
-            ->url('/admin/knowledge')
-            ->icon('heroicon-o-book-open'),
-            
-        // Context switcher dropdown
-        HeaderSelect::make('tenant')
-            ->label('Current Workspace')
-            ->options(fn () => auth()->user()->workspaces()->pluck('name', 'id'))
-            ->placeholder('Select Workspace')
-            ->icon('heroicon-o-building-office')
-            ->onChange(function ($value) {
-                session(['workspace_id' => $value]);
-                return redirect()->back();
-            }),
-            
-        // External documentation
-        HeaderSelect::make('help')
-            ->label('Help')
-            ->url('https://docs.yourapp.com')
-            ->newTab(true)
-            ->icon('heroicon-o-question-mark-circle'),
-            
-        // Admin-only dropdown
-        HeaderSelect::make('admin_tools')
-            ->label('Admin Tools')
-            ->options([
-                'maintenance' => 'Maintenance Mode',
-                'debug' => 'Debug Mode',
-                'logs' => 'View Logs',
-            ])
-            ->visible(fn () => auth()->user()?->is_admin)
-            ->icon('heroicon-o-cog-6-tooth')
-            ->onChange(function ($value) {
-                match($value) {
-                    'maintenance' => app()->call([MaintenanceController::class, 'toggle']),
-                    'debug' => session(['debug_mode' => !session('debug_mode')]),
-                    'logs' => redirect()->to('/admin/logs'),
-                };
-            }),
+HeaderSelect::make('categories')
+    ->label('Categories')
+    ->options([
+        'electronics' => 'Electronics',
+        'clothing' => 'Clothing',
+        'books' => 'Books',
     ])
-```
-
-### Multi-tenant Application
-
-```php
-HeaderSelect::make('tenant')
-    ->label('Current Tenant')
-    ->options(fn () => auth()->user()->tenants()->pluck('name', 'id'))
-    ->default(fn () => session('current_tenant_id'))
-    ->icon('heroicon-o-building-office')
+    ->icon('heroicon-o-squares-2x2')
+    ->color('success')
     ->onChange(function ($value) {
-        session(['current_tenant_id' => $value]);
-        // Switch context
-        app(TenantManager::class)->switch($value);
+        return "/admin/categories/{$value}";
     })
 ```
 
-### Environment Switcher
-
+### Dynamic Options from Database
 ```php
-HeaderSelect::make('environment')
-    ->label('Environment')
-    ->options(['production' => 'Production', 'staging' => 'Staging'])
-    ->visible(fn () => auth()->user()->is_admin)
-    ->onChange(fn ($value) => session(['environment' => $value]))
-```
-
-### Language Switcher
-
-```php
-HeaderSelect::make('locale')
-    ->label('Language')
-    ->options(['en' => 'English', 'es' => 'Español', 'fr' => 'Français'])
-    ->default(app()->getLocale())
+HeaderSelect::make('agents')
+    ->label('AI Agents')
+    ->options(fn() => Agent::pluck('name', 'id'))
+    ->refreshable(true)
+    ->color('info')
     ->onChange(function ($value) {
-        session(['locale' => $value]);
-        return redirect()->back();
+        return "/admin/agents/{$value}";
     })
 ```
 
-## API Reference
+## Troubleshooting
 
-### HeaderSelect Methods
+**Rounded corners not working?**
+- Use global `->rounded()` on HeaderSelectPlugin  
+- Clear cache: `php artisan view:clear`
 
-| Method | Description | Example |
-|--------|-------------|---------|
-| `make(string $name)` | Create select with unique name | `HeaderSelect::make('tenant')` |
-| `label(string $label)` | Set display label | `->label('Current Tenant')` |
-| `options(array\|Closure $options)` | Set dropdown options | `->options(['a' => 'Option A'])` |
-| `url(string\|Closure $url)` | Set navigation URL | `->url('/admin/dashboard')` |
-| `newTab(bool $newTab)` | Open URL in new tab | `->newTab(true)` |
-| `default(mixed $default)` | Set default value | `->default('option_a')` |
-| `placeholder(string $placeholder)` | Set placeholder text | `->placeholder('Select...')` |
-| `icon(string $icon)` | Set Heroicon | `->icon('heroicon-o-home')` |
-| `iconSize(string $size)` | Set icon size | `->iconSize('sm')` |
-| `iconSpacing(string $spacing)` | Set icon-text spacing | `->iconSpacing('relaxed')` |
-| `visible(bool\|Closure $condition)` | Set visibility | `->visible(fn() => auth()->user()->is_admin)` |
-| `disabled(bool\|Closure $condition)` | Set disabled state | `->disabled(false)` |
-| `onChange(Closure $callback)` | Handle selection changes | `->onChange(fn($value) => session(['key' => $value]))` |
+**Wrong colors showing?**
+- Use proper color names: `primary`, `gray`, `info`, `success`, `warning`, `danger`
+- Clear cache: `php artisan config:clear`
 
-### HeaderSelectPlugin Methods
-
-| Method | Description | Example |
-|--------|-------------|---------|
-| `make()` | Create plugin instance | `HeaderSelectPlugin::make()` |
-| (position fixed) | Always renders after global search (top-center) | N/A |
-| `selects(array $selects)` | Set navigation elements | `->selects([...])` |
-
-### Icon Sizing
-
-The package uses Filament's native icon sizing system:
-
-- `xs` - Extra small icons (`calc(var(--spacing) * 3)`)
-- `sm` - Small icons (`calc(var(--spacing) * 4)`) - **Default**
-- `md` - Medium icons (`calc(var(--spacing) * 5)`)
-- `lg` - Large icons (`calc(var(--spacing) * 6)`)
-- `xl` - Extra large icons (`calc(var(--spacing) * 7)`)
-- `2xl` - 2X large icons (`calc(var(--spacing) * 8)`)
-
-```php
-HeaderSelect::make('admin')
-    ->icon('heroicon-o-home')
-    ->iconSize('lg') // Uses Filament's fi-icon fi-size-lg classes
-    ->iconSpacing('relaxed') // More space between icon and text
-```
-
-### Icon Spacing Options
-
-Control the spacing between icons and text:
-
-- `tight` - 0.5rem gap (close spacing)
-- `normal` - 0.75rem gap (default, balanced spacing)  
-- `relaxed` - 1rem gap (more breathing room)
-
-```php
-HeaderSelect::make('docs')
-    ->icon('heroicon-o-document-text')
-    ->iconSpacing('relaxed') // Perfect for important navigation items
-```
-
-### Available Positions
-
-The plugin now renders at a single optimized location: fixed floating bar after the global search (top-center). Removal of position options simplifies styling and avoids layout conflicts.
-
-## Styling
-
-The package includes custom CSS that creates a floating navigation bar with:
-
-- **Fixed positioning** at the top center of the viewport
-- **Pill-shaped design** with rounded corners
-- **Hover effects** and active states
-- **Dark mode support** 
-- **Responsive design** (hidden on mobile)
-- **Smooth transitions** for all interactions
-- **Icon spacing** using CSS gap for consistent alignment
-- **Text truncation** for long labels (max 200px width)
-- **Flexible sizing** that adapts to content
-
-### Size Considerations
-
-The navigation is optimized for desktop use and automatically adjusts:
-
-- **Button width**: Maximum 200px with text truncation
-- **Icon spacing**: 0.5rem gap between icon and text
-- **Responsive**: Hidden on mobile devices (< 768px)
-- **Z-index**: High value (70) to stay above other content
-
-### Best Practices
-
-1. **Keep labels short** - Long text will be truncated with ellipsis
-2. **Limit navigation items** - 3-6 items work best for visual balance
-3. **Use meaningful icons** - Heroicons work best for consistency
-4. **Group related functions** - Use dropdowns for related options
-5. **Test responsive behavior** - Navigation hides on mobile automatically
-
-## Plugin Loading Order
-
-**Important**: The HeaderSelectPlugin must be loaded **first** before other plugins to ensure proper initialization:
-
-```php
-// ✅ CORRECT - HeaderSelect first
-->plugin(HeaderSelectPlugin::make()->...)
-->plugin(SpatieTranslatablePlugin::make()->...)
-
-// ❌ WRONG - Will cause conflicts
-->plugin(SpatieTranslatablePlugin::make()->...)
-->plugin(HeaderSelectPlugin::make()->...)
-```
-
-This ensures all render hooks and assets are properly registered.
-
-## Navigation Element Types
-
-The component automatically detects the type of navigation element based on the methods used:
-
-1. **Dropdown Select**: Has `options()` method - creates dropdown with selectable options
-2. **URL Link**: Has `url()` method - creates navigation link (internal or external)  
-3. **Action Button**: Has `onChange()` but no `options()` or `url()` - creates action button
-
-## Color Themes
-
-The component supports multiple color themes to match your design needs:
-
-```php
-HeaderSelectPlugin::make()
-    ->selects([
-        // Primary theme (default blue)
-        HeaderSelect::make('dashboard')
-            ->label('Dashboard')
-            ->url('/admin')
-            ->color('primary'),
-            
-        // Success theme (green)
-        HeaderSelect::make('tenant')
-            ->label('Tenant')
-            ->options(fn () => Tenant::pluck('name', 'id'))
-            ->color('success'),
-            
-        // Warning theme (amber)
-        HeaderSelect::make('settings')
-            ->label('Settings')
-            ->url('/settings')
-            ->color('warning'),
-            
-        // Danger theme (red)
-        HeaderSelect::make('emergency')
-            ->label('Emergency')
-            ->url('/emergency')
-            ->color('danger')
-    ])
-```
-
-Available color themes:
-- `primary` - Blue theme (default)
-- `success` - Green theme
-- `warning` - Amber theme  
-- `danger` - Red theme
-
-Each theme includes hover effects and maintains consistency with Filament's design system.
-
-## Events
-
-Listen to selection changes:
-
-```javascript
-document.addEventListener('header-select-changed', function (event) {
-    console.log(event.detail); // { select: 'tenant', value: '123', oldValue: '456' }
-});
-```
-
-## Testing
-
-```bash
-composer test
-```
+**onChange redirects not working?**
+- Return URL string from onChange callback
+- Use `return '/admin/page'` instead of `redirect()->to('/admin/page')`
 
 ## License
 
@@ -393,5 +153,5 @@ MIT License. See [LICENSE.md](LICENSE.md) for details.
 
 ## Credits
 
-- [Solution Forest](https://github.com/solution-forest)
-- Built for [Filament](https://filamentphp.com)
+- **[Solution Forest](https://github.com/solution-forest)** - Package development
+- **[Filament](https://filamentphp.com)** - Laravel admin framework

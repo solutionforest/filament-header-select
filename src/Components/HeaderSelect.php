@@ -21,11 +21,12 @@ class HeaderSelect implements Htmlable
     protected bool | Closure $disabled = false;
     protected Closure | null $onChange = null;
     protected string | null $icon = null;
-    protected string $iconSize = 'sm'; // 'xs', 'sm', 'md', 'lg', 'xl', '2xl'
-    protected string $iconSpacing = 'normal'; // 'tight', 'normal', 'relaxed'
-    protected string | null $color = null; // 'primary', 'secondary', 'success', 'warning', 'danger', 'info'
+    protected string | null $color = null;
     protected string | Closure | null $url = null;
     protected bool $newTab = false;
+    protected string $rounded = 'rounded-full'; // 'rounded-none', 'rounded', 'rounded-lg', 'rounded-full'
+    protected bool $keepOriginalLabel = true; // Keep original label instead of showing selected value
+    protected bool $refreshable = false; // Allow dynamic option updates
 
     public function __construct(string $name)
     {
@@ -85,18 +86,6 @@ class HeaderSelect implements Htmlable
         return $this;
     }
 
-    public function iconSize(string $size): static
-    {
-        $this->iconSize = $size;
-        return $this;
-    }
-
-    public function iconSpacing(string $spacing): static
-    {
-        $this->iconSpacing = $spacing;
-        return $this;
-    }
-
     public function color(string $color): static
     {
         $this->color = $color;
@@ -112,6 +101,24 @@ class HeaderSelect implements Htmlable
     public function newTab(bool $newTab = true): static
     {
         $this->newTab = $newTab;
+        return $this;
+    }
+
+    public function rounded(string $rounded = 'rounded-full'): static
+    {
+        $this->rounded = $rounded;
+        return $this;
+    }
+
+    public function keepOriginalLabel(bool $keep = true): static
+    {
+        $this->keepOriginalLabel = $keep;
+        return $this;
+    }
+
+    public function refreshable(bool $refreshable = true): static
+    {
+        $this->refreshable = $refreshable;
         return $this;
     }
 
@@ -143,12 +150,14 @@ class HeaderSelect implements Htmlable
 
     public function isVisible(): bool
     {
-        return $this->evaluate($this->visible);
+        $result = $this->evaluate($this->visible);
+        return is_bool($result) ? $result : true;
     }
 
     public function isDisabled(): bool
     {
-        return $this->evaluate($this->disabled);
+        $result = $this->evaluate($this->disabled);
+        return is_bool($result) ? $result : false;
     }
 
     public function getIcon(): ?string
@@ -156,38 +165,14 @@ class HeaderSelect implements Htmlable
         return $this->icon;
     }
 
-    public function getIconSize(): string
-    {
-        return $this->iconSize;
-    }
-
-    public function getIconClass(): string
-    {
-        // Use Filament's native icon sizing system
-        return "fi-icon fi-size-{$this->iconSize}";
-    }
-
-    public function getIconSpacing(): string
-    {
-        return match($this->iconSpacing) {
-            'tight' => '0.5rem',
-            'relaxed' => '1rem',
-            default => '0.75rem', // 'normal'
-        };
-    }
-
     public function getColor(): ?string
     {
         return $this->color;
     }
 
-    public function getColorClass(): string
+    public function getRounded(): string
     {
-        if (!$this->color) {
-            return '';
-        }
-        
-        return "filament-header-select-button-{$this->color}";
+        return $this->rounded;
     }
 
     public function getOnChange(): ?\Closure
@@ -205,6 +190,16 @@ class HeaderSelect implements Htmlable
         return $this->newTab;
     }
 
+    public function shouldKeepOriginalLabel(): bool
+    {
+        return $this->keepOriginalLabel;
+    }
+
+    public function isRefreshable(): bool
+    {
+        return $this->refreshable;
+    }
+
     public function handleChange(mixed $value): void
     {
         if ($this->onChange) {
@@ -214,7 +209,6 @@ class HeaderSelect implements Htmlable
 
     public function toHtml(): string
     {
-        // Direct HTML rendering no longer used; kept to satisfy Htmlable interface.
         return '';
     }
 }

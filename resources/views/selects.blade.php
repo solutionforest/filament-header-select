@@ -1,48 +1,12 @@
 @once
 <style>
-/* Alpine.js x-cloak directive */
-[x-cloak] { display: none !important; }
-
-/* Filament Header Select - Theme Variables */
-:root {
-    --fhs-nav-bg: white;
-    --fhs-nav-border: rgb(229 231 235);
-    --fhs-nav-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --fhs-button-text: rgb(75 85 99);
-    --fhs-button-hover-bg: rgb(249 250 251);
-    --fhs-button-hover-text: rgb(31 41 55);
-    --fhs-dropdown-bg: white;
-    --fhs-dropdown-border: rgb(229 231 235);
-    --fhs-dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
-    --fhs-option-text: rgb(75 85 99);
-    --fhs-option-hover-bg: rgb(249 250 251);
-    --fhs-option-hover-text: rgb(31 41 55);
-    --fhs-selected-bg: rgb(59 130 246);
-    --fhs-selected-text: white;
-    --fhs-selected-hover-bg: rgb(37 99 235);
-}
-
-.dark {
-    --fhs-nav-bg: rgb(17 24 39);
-    --fhs-nav-border: rgb(75 85 99);
-    --fhs-button-text: rgb(209 213 219);
-    --fhs-button-hover-bg: rgb(55 65 81);
-    --fhs-button-hover-text: white;
-    --fhs-dropdown-bg: rgb(17 24 39);
-    --fhs-dropdown-border: rgb(75 85 99);
-    --fhs-option-text: rgb(209 213 219);
-    --fhs-option-hover-bg: rgb(55 65 81);
-    --fhs-option-hover-text: white;
-}
-
-/* Filament Header Select - Clean Modern Styles */
+/* Filament Header Select - Centered Navigation Bar */
 .filament-header-select {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;
     display: none;
-    overflow: visible !important; /* Allow dropdown to extend outside container */
 }
 
 @media (min-width: 768px) {
@@ -55,154 +19,195 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.375rem;
-    background-color: var(--fhs-nav-bg);
-    border: 1px solid var(--fhs-nav-border);
-    border-radius: 0.75rem;
-    box-shadow: var(--fhs-nav-shadow);
-    overflow: visible !important; /* Allow dropdown to extend outside nav */
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(229, 231, 235, 1);
+    border-radius: 2rem; /* Much more rounded like your UI */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(8px);
+    min-height: 2.5rem;
 }
 
 .dark .filament-header-select-nav {
-    background-color: var(--fhs-nav-bg);
-    border-color: var(--fhs-nav-border);
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(75, 85, 99, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 .filament-header-select-button {
-    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.875rem;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 500;
-    line-height: 1.25rem;
-    color: var(--fhs-button-text);
+    color: rgb(107, 114, 128);
     background-color: transparent;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 1.5rem; /* More rounded buttons */
     cursor: pointer;
-    text-decoration: none;
     transition: all 150ms ease-in-out;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 12rem;
+    text-decoration: none;
+    min-height: 2rem;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden; /* Ensure content stays within button bounds */
 }
 
 .filament-header-select-button:hover {
-    background-color: var(--fhs-button-hover-bg);
-    color: var(--fhs-button-hover-text);
-}
-
-.filament-header-select-button:focus {
-    outline: none;
-    background-color: var(--fhs-button-hover-bg);
-}
-
-.dark .filament-header-select-button {
-    color: var(--fhs-button-text);
-}
-
-.dark .filament-header-select-button:hover {
-    background-color: var(--fhs-button-hover-bg);
-    color: var(--fhs-button-hover-text);
-}
-
-.dark .filament-header-select-button:focus {
-    background-color: var(--fhs-button-hover-bg);
+    background-color: rgba(243, 244, 246, 1);
+    color: rgb(75, 85, 99);
 }
 
 .filament-header-select-button-active {
-    background-color: rgb(59 130 246) !important;
-    color: white !important;
+    /* Removed active state styling - no highlighting after selection */
+    background-color: transparent;
+    color: rgb(107, 114, 128);
+    font-weight: 500;
 }
 
 .dark .filament-header-select-button-active {
-    background-color: rgb(59 130 246) !important;
-    color: white !important;
+    background-color: transparent;
+    color: rgb(156, 163, 175);
+}
+
+.dark .filament-header-select-button {
+    color: rgb(156, 163, 175);
+}
+
+.dark .filament-header-select-button:hover {
+    background-color: rgba(55, 65, 81, 1);
+    color: rgb(209, 213, 219);
+}
+
+/* Icon sizing for consistency */
+.fi-icon.fi-size-sm {
+    height: 1rem;
+    width: 1rem;
+    flex-shrink: 0;
+}
+
+/* Rounded corner utilities - Applied directly to buttons */
+.filament-header-select-button.rounded-none { border-radius: 0px; }
+.filament-header-select-button.rounded { border-radius: 0.375rem; }
+.filament-header-select-button.rounded-md { border-radius: 0.375rem; }
+.filament-header-select-button.rounded-lg { border-radius: 0.5rem; }
+.filament-header-select-button.rounded-xl { border-radius: 0.75rem; }
+.filament-header-select-button.rounded-2xl { border-radius: 1rem; }
+.filament-header-select-button.rounded-3xl { border-radius: 1.5rem; }
+.filament-header-select-button.rounded-full { border-radius: 9999px; }
+
+/* Color variants - Using Filament's default color system */
+.filament-header-select-button.color-primary {
+    background-color: rgb(99, 102, 241); /* Filament primary (indigo) */
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgb(99, 102, 241);
+}
+
+.filament-header-select-button.color-primary:hover {
+    background-color: rgb(79, 70, 229);
+    border-color: rgb(79, 70, 229);
+}
+
+.filament-header-select-button.color-gray {
+    background-color: rgb(107, 114, 128); /* Filament gray */
+    color: white;
+    font-weight: 500;
+    border: 1px solid rgb(107, 114, 128);
+}
+
+.filament-header-select-button.color-gray:hover {
+    background-color: rgb(75, 85, 99);
+    border-color: rgb(75, 85, 99);
+}
+
+.filament-header-select-button.color-info {
+    background-color: rgb(59, 130, 246); /* Filament info (blue) */
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgb(59, 130, 246);
+}
+
+.filament-header-select-button.color-info:hover {
+    background-color: rgb(37, 99, 235);
+    border-color: rgb(37, 99, 235);
+}
+
+.filament-header-select-button.color-success {
+    background-color: rgb(34, 197, 94); /* Filament success (green) */
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgb(34, 197, 94);
+}
+
+.filament-header-select-button.color-success:hover {
+    background-color: rgb(22, 163, 74);
+    border-color: rgb(22, 163, 74);
+}
+
+.filament-header-select-button.color-warning {
+    background-color: rgb(245, 158, 11); /* Filament warning (amber) */
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgb(245, 158, 11);
+}
+
+.filament-header-select-button.color-warning:hover {
+    background-color: rgb(217, 119, 6);
+    border-color: rgb(217, 119, 6);
+}
+
+.filament-header-select-button.color-danger {
+    background-color: rgb(239, 68, 68); /* Filament danger (red) */
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgb(239, 68, 68);
+}
+
+.filament-header-select-button.color-danger:hover {
+    background-color: rgb(220, 38, 38);
+    border-color: rgb(220, 38, 38);
 }
 
 .filament-header-select-icon {
-    height: 1rem;
-    width: 1rem;
+    height: 0.75rem;
+    width: 0.75rem;
     flex-shrink: 0;
-    opacity: 0.7;
-}
-
-.filament-header-select-button .fi-icon {
-    height: 1rem;
-    width: 1rem;
-    flex-shrink: 0;
-}
-
-/* Color variants */
-.filament-header-select-button-primary {
-    background-color: rgb(59 130 246) !important;
-    color: white !important;
-}
-
-.filament-header-select-button-primary:hover {
-    background-color: rgb(37 99 235) !important;
-}
-
-.filament-header-select-button-success {
-    background-color: rgb(34 197 94) !important;
-    color: white !important;
-}
-
-.filament-header-select-button-success:hover {
-    background-color: rgb(22 163 74) !important;
-}
-
-.filament-header-select-button-warning {
-    background-color: rgb(245 158 11) !important;
-    color: white !important;
-}
-
-.filament-header-select-button-warning:hover {
-    background-color: rgb(217 119 6) !important;
-}
-
-.filament-header-select-button-danger {
-    background-color: rgb(239 68 68) !important;
-    color: white !important;
-}
-
-.filament-header-select-button-danger:hover {
-    background-color: rgb(220 38 38) !important;
+    opacity: 0.6;
+    margin-left: 0.25rem;
 }
 
 .filament-header-select-dropdown {
     position: absolute;
-    top: calc(100% + 0.1rem);
+    top: calc(100% + 0.375rem);
+    right: 0;
     z-index: 9999;
-    width: 14rem;
-    max-height: 20rem;
+    width: 12rem;
+    max-height: 16rem;
     overflow: auto;
 }
 
 .filament-header-select-dropdown-content {
-    background-color: var(--fhs-dropdown-bg);
-    border: 1px solid var(--fhs-dropdown-border);
-    border-radius: 0.75rem;
-    box-shadow: var(--fhs-dropdown-shadow);
+    background: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     overflow: hidden;
 }
 
 .dark .filament-header-select-dropdown-content {
-    background-color: var(--fhs-dropdown-bg);
-    border-color: var(--fhs-dropdown-border);
+    background: rgb(31, 41, 55);
+    border-color: rgb(75, 85, 99);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
 }
 
 .filament-header-select-list {
     list-style: none;
     margin: 0;
     padding: 0.25rem;
-}
-
-.filament-header-select-list > li {
-    margin: 0;
 }
 
 .filament-header-select-option {
@@ -212,65 +217,38 @@
     width: 100%;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: var(--fhs-option-text);
+    color: rgb(75, 85, 99);
     background-color: transparent;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 0.375rem;
     cursor: pointer;
     text-align: left;
-    transition: background-color 150ms ease-in-out;
+    transition: all 150ms ease-in-out;
 }
 
 .filament-header-select-option:hover {
-    background-color: var(--fhs-option-hover-bg);
-    color: var(--fhs-option-hover-text);
-}
-
-.filament-header-select-option:focus {
-    outline: none;
-    background-color: var(--fhs-option-hover-bg);
-}
-
-.dark .filament-header-select-option {
-    color: var(--fhs-option-text);
-}
-
-.dark .filament-header-select-option:hover {
-    background-color: var(--fhs-option-hover-bg);
-    color: var(--fhs-option-hover-text);
-}
-
-.dark .filament-header-select-option:focus {
-    background-color: var(--fhs-option-hover-bg);
+    background-color: rgb(243, 244, 246);
+    color: rgb(59, 130, 246);
 }
 
 .filament-header-select-option-selected {
-    background-color: var(--fhs-selected-bg);
-    color: var(--fhs-selected-text);
+    background-color: rgb(59, 130, 246);
+    color: white;
+    font-weight: 500;
 }
 
-.filament-header-select-option-selected:hover {
-    background-color: var(--fhs-selected-hover-bg);
+.dark .filament-header-select-option {
+    color: rgb(209, 213, 219);
 }
 
-/* Prevent hover flicker & indicate non-clickable selected */
-.filament-header-select-option-selected.cursor-default {
-    pointer-events: none;
-}
-
-/* Active trigger button subtle ring */
-.filament-header-select-button-active {
-    box-shadow: 0 0 0 1px rgba(59,130,246,.4), 0 0 0 3px rgba(59,130,246,.15);
+.dark .filament-header-select-option:hover {
+    background-color: rgba(55, 65, 81, 1);
+    color: rgb(147, 197, 253);
 }
 
 .dark .filament-header-select-option-selected {
-    background-color: var(--fhs-selected-bg);
-    color: var(--fhs-selected-text);
-}
-
-.dark .filament-header-select-option-selected:hover {
-    background-color: var(--fhs-selected-hover-bg);
+    background-color: rgb(59, 130, 246);
+    color: white;
 }
 
 .filament-header-select-option-text {
@@ -285,73 +263,38 @@
     width: 1rem;
     flex-shrink: 0;
     margin-left: 0.5rem;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
-/* Indicate navigable option */
-.filament-header-select-option.has-url:not(.filament-header-select-option-selected) {
-    position: relative;
-}
-.filament-header-select-option.has-url:not(.filament-header-select-option-selected)::after {
-    content: '\2192'; /* arrow */
-    font-size: 0.75rem;
-    opacity: .45;
-    margin-left: .5rem;
-}
-.filament-header-select-option.has-url:hover::after {
-    opacity: .8;
+/* Enhanced animations */
+.filament-header-select-nav {
+    animation: slideDown 0.2s ease-out;
 }
 
-/* ------------------------------------------------------------------ */
-/* Visual refinement: lighter active + selected states (override)      */
-/* ------------------------------------------------------------------ */
-
-/* Active trigger button (value selected or open) */
-.filament-header-select-button-active {
-    background-color: rgba(59,130,246,0.12) !important;
-    color: var(--fhs-button-text) !important;
-    border: 1px solid rgba(59,130,246,0.35) !important;
-    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.04);
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
-.filament-header-select-button-active:hover,
-.filament-header-select-button-active:focus {
-    background-color: rgba(59,130,246,0.18) !important;
+.filament-header-select-dropdown-content {
+    animation: fadeInUp 0.15s ease-out;
 }
 
-/* Selected option in dropdown */
-.filament-header-select-option-selected {
-    background-color: rgba(59,130,246,0.15) !important;
-    color: var(--fhs-button-text) !important;
-    font-weight: 500;
-}
-
-.filament-header-select-option-selected:hover,
-.filament-header-select-option-selected:focus {
-    background-color: rgba(59,130,246,0.22) !important;
-}
-
-/* Check icon color & subtle emphasis */
-.filament-header-select-option-selected .filament-header-select-check-icon {
-    color: rgb(59 130 246);
-    opacity: 0.95;
-}
-
-/* Dark mode adjustments */
-.dark .filament-header-select-button-active {
-    background-color: rgba(59,130,246,0.22) !important;
-    color: var(--fhs-button-text) !important;
-    border-color: rgba(59,130,246,0.55) !important;
-}
-
-.dark .filament-header-select-option-selected {
-    background-color: rgba(59,130,246,0.25) !important;
-    color: var(--fhs-option-text) !important;
-}
-
-.dark .filament-header-select-option-selected:hover,
-.dark .filament-header-select-option-selected:focus {
-    background-color: rgba(59,130,246,0.35) !important;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
 @endonce
@@ -365,43 +308,22 @@
                     $label = $select->getLabel();
                     $options = $select->getOptions();
                     $placeholder = $select->getPlaceholder();
-                    $disabled = $select->isDisabled();
                     $icon = $select->getIcon();
-                    $iconClass = $select->getIconClass();
-                    $iconSpacing = $select->getIconSpacing();
-                    $colorClass = $select->getColorClass();
+                    $color = $select->getColor();
+                    $rounded = $select->getRounded();
                     $url = $select->getUrl();
                     $newTab = $select->shouldOpenInNewTab();
-                    $selectId = "header-select-{$name}";
                     $value = session($name) ?? $select->getDefault();
-                    $selectedLabel = $placeholder;
+                    $keepOriginalLabel = $select->shouldKeepOriginalLabel();
+                    $refreshable = $select->isRefreshable();
                     
-                    // Find the selected option label
-                    foreach ($options as $optionValue => $optionLabel) {
-                        if ($value == $optionValue) {
-                            $selectedLabel = $optionLabel;
-                            break;
-                        }
-                    }
-                    
-                    if (!$selectedLabel && $placeholder) {
-                        $selectedLabel = $placeholder;
-                    }
-                    
-                    // Check if this is a dropdown (has options), URL link, or simple button
+                    // Check if this is a dropdown (has options) or URL link
                     $hasOptions = !empty($options);
                     $hasUrl = !empty($url);
-                    $isActive = $value && $value !== '';
-                    
-                    // For URL links, check if current URL matches
-                    if ($hasUrl && !$hasOptions) {
-                        $currentUrl = request()->url();
-                        $isActive = $currentUrl === $url || request()->routeIs($name);
-                    }
                 @endphp
                 
                 @if ($hasOptions)
-                    {{-- Livewire Dropdown Component (stateful, no extra route/middleware) --}}
+                    {{-- Livewire Dropdown Component --}}
                     @livewire('header-select-component', [
                         'selectData' => [
                             'name' => $name,
@@ -410,31 +332,33 @@
                             'placeholder' => $placeholder,
                             'defaultValue' => $value,
                             'icon' => $icon,
+                            'color' => $color,
+                            'rounded' => $rounded,
+                            'keepOriginalLabel' => $keepOriginalLabel,
+                            'refreshable' => $refreshable,
                         ],
                     ], key('header-select-'.$name))
                 @elseif ($hasUrl)
                     {{-- URL Link Button --}}
                     <a 
                         href="{{ $url }}" 
-                        title="{{ $label }}" 
-                        class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }} {{ $colorClass }}"
-                        style="gap: {{ $iconSpacing }}"
+                        class="filament-header-select-button {{ $rounded }} {{ $color ? 'color-' . $color : '' }}"
                         @if($newTab) target="_blank" rel="noopener noreferrer" @endif
                     >
                         @if ($icon)
-                            <x-filament::icon :icon="$icon" class="{{ $iconClass }}" />
+                            <x-filament::icon :icon="$icon" class="fi-icon fi-size-sm" />
                         @endif
                         <span class="truncate">{{ $label }}</span>
                     </a>
                 @else
-                    {{-- Simple Action via Livewire --}}
+                    {{-- Simple Action Button --}}
                     @livewire('header-select-component', [
                         'selectData' => [
                             'name' => $name,
                             'label' => $label,
-                            'placeholder' => $label,
-                            'defaultValue' => $value,
                             'icon' => $icon,
+                            'color' => $color,
+                            'rounded' => $rounded,
                         ],
                         'actionMode' => true,
                     ], key('header-select-action-'.$name))

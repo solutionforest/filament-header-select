@@ -9,36 +9,36 @@ class HeaderSelectComponent extends Component
 {
     public array $selectData = [];
     public $value = null;
-    public bool $actionMode = false; // when true, acts as simple action button
-    /** @var array<string,string> Map of option value => URL */
-    public array $optionUrls = [];
+    public bool $actionMode = false;
+    public array $currentOptions = [];
 
     public function mount(array $selectData = [], bool $actionMode = false)
     {
         $this->selectData = $selectData;
         $this->actionMode = $actionMode;
+        $this->currentOptions = $selectData['options'] ?? [];
         $name = $this->selectData['name'] ?? '';
         $defaultValue = $this->selectData['defaultValue'] ?? null;
-        $this->optionUrls = $this->selectData['optionUrls'] ?? [];
         
         if ($name) {
             $this->value = session($name) ?? $defaultValue;
         }
-        
     }
 
-    public function selectOption($newValue)
+    public function refreshOptions()
     {
-        $this->value = $newValue;
-        $this->updatedValue($newValue);
-
-        // Optional navigation if a URL is mapped to this option
-        if (isset($this->optionUrls[$newValue]) && $this->optionUrls[$newValue]) {
-            return redirect()->to($this->optionUrls[$newValue]);
+        $name = $this->selectData['name'] ?? '';
+        if ($name && ($this->selectData['refreshable'] ?? false)) {
+            // Get fresh options from the plugin
+            $freshOptions = HeaderSelectPlugin::getFreshOptions($name);
+            if ($freshOptions !== null) {
+                $this->currentOptions = $freshOptions;
+                $this->selectData['options'] = $freshOptions;
+            }
         }
     }
 
-    public function setValue($newValue)
+    public function selectOption($newValue)
     {
         $this->value = $newValue;
         $this->updatedValue($newValue);
@@ -54,6 +54,13 @@ class HeaderSelectComponent extends Component
             // Execute the onChange callback through the plugin
             HeaderSelectPlugin::executeCallback($name, $value);
             
+            // Check if there's a redirect URL and dispatch to frontend
+            if ($redirectUrl = session('header_select_redirect_url')) {
+                session()->forget('header_select_redirect_url');
+                $this->dispatch('header-select-redirect', url: $redirectUrl);
+                return;
+            }
+            
             $this->dispatch('header-select-changed', 
                 select: $name,
                 value: $value
@@ -63,7 +70,6 @@ class HeaderSelectComponent extends Component
 
     public function triggerAction()
     {
-        // Simple action: set session value to its name (toggle semantics can be implemented via callback)
         $name = $this->selectData['name'] ?? '';
         if ($name) {
             session([$name => $name]);
