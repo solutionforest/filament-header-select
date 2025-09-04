@@ -90,6 +90,43 @@
     margin: 0;
 }
 
+/* Color variants */
+.filament-header-select-button-primary {
+    background-color: rgb(59 130 246) !important;
+    color: rgb(255 255 255) !important;
+}
+
+.filament-header-select-button-primary:hover {
+    background-color: rgb(37 99 235) !important;
+}
+
+.filament-header-select-button-success {
+    background-color: rgb(34 197 94) !important;
+    color: rgb(255 255 255) !important;
+}
+
+.filament-header-select-button-success:hover {
+    background-color: rgb(22 163 74) !important;
+}
+
+.filament-header-select-button-warning {
+    background-color: rgb(245 158 11) !important;
+    color: rgb(255 255 255) !important;
+}
+
+.filament-header-select-button-warning:hover {
+    background-color: rgb(217 119 6) !important;
+}
+
+.filament-header-select-button-danger {
+    background-color: rgb(239 68 68) !important;
+    color: rgb(255 255 255) !important;
+}
+
+.filament-header-select-button-danger:hover {
+    background-color: rgb(220 38 38) !important;
+}
+
 .filament-header-select-dropdown {
 
 .filament-header-select-dropdown {
@@ -196,6 +233,7 @@
                     $icon = $select->getIcon();
                     $iconClass = $select->getIconClass();
                     $iconSpacing = $select->getIconSpacing();
+                    $colorClass = $select->getColorClass();
                     $url = $select->getUrl();
                     $newTab = $select->shouldOpenInNewTab();
                     $selectId = "header-select-{$name}";
@@ -235,7 +273,7 @@
                             aria-haspopup="listbox" 
                             :aria-expanded="open_{{ $index }}" 
                             title="{{ $label }}" 
-                            class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }}"
+                            class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }} {{ $colorClass }}"
                             style="gap: {{ $iconSpacing }}"
                         >
                             @if ($icon)
@@ -330,7 +368,7 @@
                     <a 
                         href="{{ $url }}" 
                         title="{{ $label }}" 
-                        class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }}"
+                        class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }} {{ $colorClass }}"
                         style="gap: {{ $iconSpacing }}"
                         @if($newTab) target="_blank" rel="noopener noreferrer" @endif
                     >
@@ -344,7 +382,7 @@
                     <button 
                         type="button" 
                         title="{{ $label }}" 
-                        class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }}"
+                        class="filament-header-select-button {{ $isActive ? 'filament-header-select-button-active' : '' }} {{ $colorClass }}"
                         style="gap: {{ $iconSpacing }}"
                         @click="
                             fetch('/filament-header-select/update', {

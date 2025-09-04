@@ -8,16 +8,17 @@ A powerful Laravel package that adds customizable navigation elements to the Fil
 
 - 🎯 **Easy Integration** - Simple installation and configuration
 - 🚀 **Multiple Navigation Types** - Dropdowns, page links, and external URLs
-- 🎨 **Fully Customizable** - Customize appearance, behavior, and positioning
+- 🎨 **Fully Customizable** - Customize appearance, behavior, positioning, and colors
 - 🔄 **Dynamic Options** - Load options from database, API, or static arrays
 - 🌗 **Dark Mode Support** - Seamlessly works with Filament's dark mode
 - 📱 **Responsive Design** - Mobile-friendly floating navigation bar
 - 🔌 **Event Driven** - Emit and listen to selection change events
 - 🏗️ **Multiple Instances** - Add multiple navigation elements in the header
-- 🔐 **Permission Support** - Built-in authorization support
-- 🌐 **Multi-language** - Translation ready
+- 🔐 **Permission Support** - Built-in authorization support via `visible()` method
 - 🧪 **Pure CSS** - No external dependencies, self-contained styling
 - 🎯 **Modern UI** - Matches reference designs with pill-shaped navigation
+- 🎨 **Color Themes** - Support for primary, success, warning, and danger color variants
+- 📏 **Icon Sizing** - Filament-native icon sizing system with spacing control
 
 ## Requirements
 
@@ -332,6 +333,47 @@ The component automatically detects the type of navigation element based on the 
 1. **Dropdown Select**: Has `options()` method - creates dropdown with selectable options
 2. **URL Link**: Has `url()` method - creates navigation link (internal or external)  
 3. **Action Button**: Has `onChange()` but no `options()` or `url()` - creates action button
+
+## Color Themes
+
+The component supports multiple color themes to match your design needs:
+
+```php
+HeaderSelectPlugin::make()
+    ->selects([
+        // Primary theme (default blue)
+        HeaderSelect::make('dashboard')
+            ->label('Dashboard')
+            ->url('/admin')
+            ->color('primary'),
+            
+        // Success theme (green)
+        HeaderSelect::make('tenant')
+            ->label('Tenant')
+            ->options(fn () => Tenant::pluck('name', 'id'))
+            ->color('success'),
+            
+        // Warning theme (amber)
+        HeaderSelect::make('settings')
+            ->label('Settings')
+            ->url('/settings')
+            ->color('warning'),
+            
+        // Danger theme (red)
+        HeaderSelect::make('emergency')
+            ->label('Emergency')
+            ->url('/emergency')
+            ->color('danger')
+    ])
+```
+
+Available color themes:
+- `primary` - Blue theme (default)
+- `success` - Green theme
+- `warning` - Amber theme  
+- `danger` - Red theme
+
+Each theme includes hover effects and maintains consistency with Filament's design system.
 
 ## Events
 

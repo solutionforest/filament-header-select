@@ -23,6 +23,7 @@ class HeaderSelect implements Htmlable
     protected string | null $icon = null;
     protected string $iconSize = 'sm'; // 'xs', 'sm', 'md', 'lg', 'xl', '2xl'
     protected string $iconSpacing = 'normal'; // 'tight', 'normal', 'relaxed'
+    protected string | null $color = null; // 'primary', 'secondary', 'success', 'warning', 'danger', 'info'
     protected string | Closure | null $url = null;
     protected bool $newTab = false;
 
@@ -93,6 +94,12 @@ class HeaderSelect implements Htmlable
     public function iconSpacing(string $spacing): static
     {
         $this->iconSpacing = $spacing;
+        return $this;
+    }
+
+    public function color(string $color): static
+    {
+        $this->color = $color;
         return $this;
     }
 
@@ -167,6 +174,20 @@ class HeaderSelect implements Htmlable
             'relaxed' => '1rem',
             default => '0.75rem', // 'normal'
         };
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function getColorClass(): string
+    {
+        if (!$this->color) {
+            return '';
+        }
+        
+        return "filament-header-select-button-{$this->color}";
     }
 
     public function getOnChange(): ?\Closure
