@@ -1,5 +1,7 @@
 <?php
 
+use Filament\View\PanelsRenderHook;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -12,4 +14,5 @@ return [
     |
     */
     'default_classes' => 'min-w-[200px]',
+    'default_hook' => PanelsRenderHook::TOPBAR_START,
 ];

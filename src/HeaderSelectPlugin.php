@@ -43,26 +43,10 @@ class HeaderSelectPlugin implements Plugin
                 $this->registerCallback($select->getName(), $callback);
             }
         }
-
-        // Register option provider for agent_config to fetch fresh agents from database
-        static::registerOptionProvider('agent_config', function () {
-            // Check if Agent model exists
-            if (class_exists('\App\Models\Agent')) {
-                return \App\Models\Agent::getForHeaderSelect();
-            }
-            
-            // Fallback to static options if Agent model doesn't exist
-            return [
-                'my_agent_1' => 'My Agent 2025-08-29 16:24',
-                'my_agent_2' => 'My Agent 2025-08-29 16:20',
-                'my_agent_3' => 'My Agent 2025-09-04 12:30',
-                'new_agent' => '+ New AI Agent',
-            ];
-        });
-
+        
         // Fixed top-center placement in the topbar end section for better positioning.
         $panel->renderHook(
-            PanelsRenderHook::TOPBAR_START,
+            config('filament-header-select.default_hook') ?? PanelsRenderHook::TOPBAR_START,
             fn (): string => view('filament-header-select::selects', [
                 'selects' => $this->selects,
             ])->render()
